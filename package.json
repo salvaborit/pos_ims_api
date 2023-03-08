@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "npm test",
-    "dev": "nodemon ./app"
+    "dev": "nodemon ./app",
+    "migrate": "node middleware/migrate_middleware.js"
   },
   "repository": {
     "type": "git",
