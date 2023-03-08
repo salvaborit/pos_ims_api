@@ -1,0 +1,20 @@
+{
+  "name": "pos-inventory-management-system",
+  "version": "1.0.0",
+  "description": "API for Resonance Point-of-Sale Inventory Management System",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/salvaborit/pos_ims_api"
+  },
+  "keywords": [
+    "pos",
+    "terminal",
+    "inventory"
+  ],
+  "author": "Salvador Borit / Agustin Muniz",
+  "license": "ISC"
+}
