@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm test",
     "dev": "nodemon app.js",
-    "migrate": "node middleware/migrate_middleware.js"
+    "migrate": "node middleware/migrate_to_db.js"
   },
   "repository": {
     "type": "git",
