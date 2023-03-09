@@ -6,6 +6,7 @@ const acquirerRoutes = require('./routes/acquirer')
 const connectivityRoutes = require('./routes/connectivity')
 const locationController = require('./routes/location')
 const makeController = require('./routes/make')
+const statusController = require('./routes/status')
 
 const app = express()
 app.use(morgan('dev'))
@@ -22,6 +23,7 @@ app.use('/api/acquirer', acquirerRoutes)
 app.use('/api/connectivity', connectivityRoutes)
 app.use('/api/location', locationController)
 app.use('/api/make', makeController)
+app.use('/api/status', statusController)
 
 app.get('/', (req, res) => {
     res.json({ message: 'Servidor Corriendo' })
