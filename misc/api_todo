@@ -1,0 +1,17 @@
+- tabla chips
+- fk para chip en tabla terminal 1-1
+- tabla remitos
+  - terminales (serie, pn, acq, modelo)
+  - emisor/receptor
+  - origen/destino
+  - fecha
+  - numero de remito
+  - link (str)
+
+- tabla logs
+  - usuario
+  - terminal modificada
+  - datetime
+  - cambios
+
+- auth y permissions
