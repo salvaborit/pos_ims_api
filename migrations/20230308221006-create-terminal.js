@@ -1,7 +1,7 @@
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize, DataTypes) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable("terminals", {
       id: {
         allowNull: false,
@@ -70,6 +70,25 @@ module.exports = {
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
+      },
+      chipId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "chip",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
+      },
+      softwareVersion: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      hasKeys: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
       },
       remarks: {
         type: DataTypes.TEXT,

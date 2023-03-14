@@ -2,7 +2,6 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class terminal extends Model {
-
     static associate(models) {
       terminal.belongsTo(models.acquirer, {
         foreignKey: "acquirerId",
@@ -26,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       terminal.belongsTo(models.connectivity, {
         foreignKey: "connectivityId",
+        onDelete: "RESTRICT",
+        onUpdate: "CASCADE",
+      });
+      terminal.belongsTo(models.chip, {
+        foreignKey: "chipId",
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       });
@@ -63,6 +67,19 @@ module.exports = (sequelize, DataTypes) => {
       },
       connectivityId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      softwareVersion: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      chipId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      hasKeys: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
       },
       remarks: {
