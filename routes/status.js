@@ -1,11 +1,11 @@
-const { Router } = require('express')
-const statusController = require('../controllers/status')
-const router = Router()
+const { Router } = require("express");
+const statusController = require("../controllers/status");
+const router = Router();
 
-router.post('/add', statusController.createStatus)
-router.get('/all', statusController.getAllStatus)
-router.get('/all/:id', statusController.getStatusById)
-router.put('/update/:id', statusController.updateStatusById)
-router.delete('/delete/:id', statusController.deleteStatusById)
+router.get("/", statusController.getAll);
+router.get("/:id", statusController.getById);
+router.post("/", statusController.postOne);
+router.put("/:id", statusController.putById);
+router.delete("/:id", statusController.deleteById);
 
-module.exports = router
+module.exports = router;

@@ -1,11 +1,11 @@
-const { Router } = require('express')
-const acquirerController = require('../controllers/acquirer')
-const router = Router()
+const { Router } = require("express");
+const acquirerController = require("../controllers/acquirer");
+const router = Router();
 
-router.post('/add', acquirerController.createAcquirer)
-router.get('/all', acquirerController.getAllAcquirers)
-router.get('/all/:id', acquirerController.getAcquirerById)
-router.put('/update/:id', acquirerController.updateAcquirerById)
-router.delete('/delete/:id', acquirerController.deleteAcquirerById)
+router.get("/", acquirerController.getAll);
+router.get("/:id", acquirerController.getById);
+router.post("/", acquirerController.postOne);
+router.put("/:id", acquirerController.putById);
+router.delete("/:id", acquirerController.deleteById);
 
-module.exports = router
+module.exports = router;

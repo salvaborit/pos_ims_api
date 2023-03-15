@@ -2,10 +2,10 @@ const { Router } = require("express");
 const terminalController = require("../controllers/terminal");
 const router = Router();
 
-router.post("/add", terminalController.createTerminal);
-router.get("/all", terminalController.getAllTerminals);
-router.get("/all/:id", terminalController.getTerminalById);
-router.put("/update/:id", terminalController.updateTerminalById);
-router.delete("/delete/:id", terminalController.deleteTerminalById);
+router.get("/", terminalController.getAll);
+router.get("/:id", terminalController.getById);
+router.post("/", terminalController.postOne);
+router.put("/:id", terminalController.putById);
+router.delete("/:id", terminalController.deleteById);
 
 module.exports = router;

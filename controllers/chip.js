@@ -1,91 +1,71 @@
 const { chip } = require("../models");
 
-const createChip = async (req, res) => {
-  const { serialNumber } = req.body;
-
+const getAll = async (req, res) => {
   try {
-    const existingChip = await chip.findOne({ where: { serialNumber } });
-    if (existingChip) {
-      return res
-        .status(400)
-        .json({ error: "Chip with that serial alredy exist" });
-    }
-
-    const chp = await chip.create(req.body);
-    return res.status(201).json(chp);
+    const foundItems = await chip.findAll();
+    return res.status(200).json(foundItems);
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to fetch" });
   }
 };
 
-const getAllChips = async (req, res) => {
+const getById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const chps = await chip.findAll({});
-    return res.status(200).json(chps);
+    const foundItem = await chip.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to fetch" });
   }
 };
 
-const getChipById = async (req, res) => {
+const postOne = async (req, res) => {
+  const { providerId, serialNumber } = req.body;
+
   try {
-    const { id } = req.params;
-    const chp = await chip.findByPk(id);
-
-    if (chp) {
-      return res.status(200).json(chp);
-    }
-
-    return res.status(404).json({ error: "Chip with that id dont exist" });
+    const foundItem = await chip.findOne({ where: { serialNumber } });
+    if (foundItem)
+      return res.status(400).json({ error: "Serial number already exists" });
+    await chip.create({ providerId, serialNumber });
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const updateChipById = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const { providerId, serialNumber } = req.body;
+
   try {
-    const { id } = req.params;
-    const chp = await chip.findByPk(id);
-
-    if (!chp) {
-      return res.status(404).json({ error: "Chip with that id dont exists" });
-    }
-
-    const updated = await chip.update(req.body);
-
-    if (updated) {
-      const updatedChip = await chip.findByPk(id);
-      return res.status(200).json({ chip: updatedChip });
-    }
+    const foundItem = await chip.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await chip.update({ providerId, serialNumber }, { where: { id } });
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const deleteChipById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const chp = await chip.findByPk(id);
-
-    if (!chp) {
-      return res.status(404).json({ error: "Chip with that id dont exists" });
-    }
-
-    const deleted = await chip.destroy({ where: { id: id } });
-
-    if (deleted) {
-      const deletedChip = await chip.findByPk(id);
-      return res.status(200).json({ message: "Chip deleted" });
-    }
+    const foundItem = await chip.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await chip.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createChip,
-  getAllChips,
-  getChipById,
-  updateChipById,
-  deleteChipById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

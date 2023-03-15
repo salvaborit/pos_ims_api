@@ -1,86 +1,71 @@
 const { location } = require("../models");
 
-const createLocation = async (req, res) => {
+const getAll = async (req, res) => {
+  try {
+    const foundItems = await location.findAll();
+    return res.status(200).json(foundItems);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const foundItem = await location.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const postOne = async (req, res) => {
   const { name } = req.body;
-  try {
-    const existingLocation = await location.findOne({ where: { name } });
-    if (existingLocation) {
-      return res.status(400).json({ error: "That location alredy exist" });
-    }
 
-    const locn = await location.create(req.body);
-    return res.status(201).json(locn);
+  try {
+    const foundItem = await location.findOne({ where: { name } });
+    if (foundItem)
+      return res.status(400).json({ error: "Name already exists" });
+    await location.create({ name });
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const getAllLocations = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
   try {
-    const locns = await location.findAll({});
-    return res.status(201).json(locns);
+    const foundItem = await location.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await location.update({ name }, { where: { id } });
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const getLocationById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const locn = await location.findByPk(id);
-
-    if (locn) {
-      return res.status(200).json(locn);
-    }
-
-    return res.status(404).json({ message: "Location with that id not exist" });
+    const foundItem = await location.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await location.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const updateLocationById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const locn = await location.findByPk(id);
-
-    if (!locn) {
-      return res.status(404).json({ error: "Location with that id not exist" });
-    }
-
-    const updated = await location.update(req.body, { where: { id: id } });
-
-    if (updated) {
-      const updatedLocation = await location.findOne({ where: { id: id } });
-      return res.status(200).json({ location: updatedLocation });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const deleteLocationById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const locn = await location.findByPk(id);
-
-    if (!locn) {
-      return res
-        .stauts(404)
-        .json({ error: "Location with that id dont exist" });
-    }
-
-    const deleted = await location.destroy({ where: { id: id } });
-    return res.status(200).json({ message: "Location deleted" });
-  } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createLocation,
-  getAllLocations,
-  getLocationById,
-  updateLocationById,
-  deleteLocationById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

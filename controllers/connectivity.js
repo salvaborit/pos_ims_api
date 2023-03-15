@@ -1,99 +1,71 @@
 const { connectivity } = require("../models");
 
-const createConnectivity = async (req, res) => {
+const getAll = async (req, res) => {
+  try {
+    const foundItems = await connectivity.findAll();
+    return res.status(200).json(foundItems);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const foundItem = await connectivity.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const postOne = async (req, res) => {
   const { type } = req.body;
 
   try {
-    const existingConnectivity = await connectivity.findOne({
-      where: { type },
-    });
-    if (existingConnectivity) {
-      return res
-        .status(400)
-        .json({ error: "That type of connectivity alredy exists" });
-    }
-
-    const conn = await connectivity.create(req.body);
-    return res.status(201).json(conn);
+    const foundItem = await connectivity.findOne({ where: { type } });
+    if (foundItem)
+      return res.status(400).json({ error: "Type already exists" });
+    await connectivity.create({ type });
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const getAllConnectivitys = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const { type } = req.body;
+
   try {
-    const conns = await connectivity.findAll({});
-    return res.status(201).json(conns);
+    const foundItem = await connectivity.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await connectivity.update({ type }, { where: { id } });
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const getConnectivityById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const conn = await connectivity.findByPk(id);
-
-    if (conn) {
-      return res.status(200).json(conn);
-    }
-
-    return res
-      .status(404)
-      .json({ message: "Connectivity with that id not exist" });
+    const foundItem = await connectivity.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await connectivity.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const updateConnectivityById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const conn = await connectivity.findByPk(id);
-
-    if (!conn) {
-      return res
-        .status(404)
-        .json({ error: "Connectivity with that id not exist" });
-    }
-
-    const updated = await connectivity.update(req.body, { where: { id: id } });
-
-    if (updated) {
-      const updatedConn = await connectivity.findByPk(id);
-      return res.status(200).json({ acquirer: updatedConn });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const deleteConnectivityById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const conn = await connectivity.findByPk(id);
-
-    if (!conn) {
-      return res
-        .status(404)
-        .json({ error: "Connectivity with that id not exist" });
-    }
-
-    const deleted = await connectivity.destroy({ where: { id: id } });
-
-    if (deleted) {
-      const deletedConn = await connectivity.findOne({ where: { id: id } });
-      return res.status(200).json({ message: "Connectivity deleted" });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createConnectivity,
-  getAllConnectivitys,
-  getConnectivityById,
-  updateConnectivityById,
-  deleteConnectivityById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

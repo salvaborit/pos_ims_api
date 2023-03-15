@@ -8,93 +8,125 @@ const {
   chip,
 } = require("../models");
 
-const createTerminal = async (req, res) => {
-  const { serialNumber } = req.body;
+const getAll = async (req, res) => {
   try {
-    const existingterminal = await terminal.findOne({
-      where: { serialNumber },
-    });
-    if (existingterminal) {
-      return res.status(400).json({ error: "That terminal alredy exist" });
-    }
-
-    const term = await terminal.create(req.body, {
+    const foundItems = await terminal.findAll({
       include: [acquirer, make, location, status, connectivity, chip],
     });
-    return res.status(201).json(term);
+    return res.status(200).json(foundItems);
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to fetch" });
   }
 };
 
-const getAllTerminals = async (req, res) => {
+const getById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const terms = await terminal.findAll({
-      include: [acquirer, make, location, status, connectivity, chip],
+    const foundItem = await terminal.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const postOne = async (req, res) => {
+  const {
+    serialNumber,
+    partNumber,
+    acquirerId,
+    makeId,
+    locationId,
+    statusId,
+    connectivityId,
+    chipId,
+    softwareVersion,
+    haskeys,
+    remarks,
+  } = req.body;
+
+  try {
+    const foundItem = await terminal.findOne({ where: { serialNumber } });
+    if (foundItem)
+      return res.status(400).json({ error: "Serial number already exists" });
+    await terminal.create({
+      serialNumber,
+      partNumber,
+      acquirerId,
+      makeId,
+      locationId,
+      statusId,
+      connectivityId,
+      chipId,
+      softwareVersion,
+      haskeys,
+      remarks,
     });
-    return res.status(201).json(terms);
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const getTerminalById = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const {
+    serialNumber,
+    partNumber,
+    acquirerId,
+    makeId,
+    locationId,
+    statusId,
+    connectivityId,
+    chipId,
+    softwareVersion,
+    haskeys,
+    remarks,
+  } = req.body;
+
   try {
-    const { id } = req.params;
-    const term = await terminal.findByPk(id);
-
-    if (term) {
-      return res.status(200).json(term);
-    }
-
-    return res.status(404).json({ message: "terminal with that id not exist" });
+    const foundItem = await terminal.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await terminal.update(
+      {
+        serialNumber,
+        partNumber,
+        acquirerId,
+        makeId,
+        locationId,
+        statusId,
+        connectivityId,
+        chipId,
+        softwareVersion,
+        haskeys,
+        remarks,
+      },
+      { where: { id } }
+    );
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const updateTerminalById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const term = await terminal.findByPk(id);
-
-    if (!term) {
-      return res.status(404).json({ error: "terminal with that id not exist" });
-    }
-
-    const updated = await terminal.update(req.body, { where: { id: id } });
-
-    if (updated) {
-      const updatedterminal = await terminal.findOne({ where: { id: id } });
-      return res.status(200).json({ terminal: updatedterminal });
-    }
-  } catch (error) {
-    return res.status(400).json({ error });
-  }
-};
-
-const deleteTerminalById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const term = await terminal.findByPk(id);
-
-    if (!term) {
-      return res
-        .stauts(404)
-        .json({ error: "terminal with that id dont exist" });
-    }
-
-    const deleted = await terminal.destroy({ where: { id: id } });
-    return res.status(200).json({ message: "terminal deleted" });
+    const foundItem = await terminal.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await terminal.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
     return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createTerminal,
-  getAllTerminals,
-  getTerminalById,
-  updateTerminalById,
-  deleteTerminalById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

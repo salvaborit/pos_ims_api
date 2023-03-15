@@ -1,85 +1,71 @@
 const { status } = require("../models");
 
-const createStatus = async (req, res) => {
+const getAll = async (req, res) => {
+  try {
+    const foundItems = await status.findAll();
+    return res.status(200).json(foundItems);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const foundItem = await status.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const postOne = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const existingStatus = await status.findOne({ where: { name } });
-    if (existingStatus) {
-      return res.status(400).json({ error: "That status alredy exist" });
-    }
-
-    const sts = await status.create(req.body);
-    return res.status(201).json(sts);
+    const foundItem = await status.findOne({ where: { name } });
+    if (foundItem)
+      return res.status(400).json({ error: "Name already exists" });
+    await status.create({ name });
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const getAllStatus = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
   try {
-    const stes = await status.findAll({});
-    return res.status(201).json(stes);
+    const foundItem = await status.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await status.update({ name }, { where: { id } });
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const getStatusById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const sts = await status.findByPk(id);
-
-    if (sts) {
-      return res.status(200).json(sts);
-    }
-
-    return res.status(404).json({ message: "Status with that id not exist" });
+    const foundItem = await status.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await status.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const updateStatusById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const sts = await status.findByPk(id);
-
-    if (!sts) {
-      return res.status(404).json({ error: "Status with that id not exist" });
-    }
-
-    const updated = await status.update(req.body, { where: { id: id } });
-
-    if (updated) {
-      const updatedStatus = await status.findOne({ where: { id: id } });
-      return res.status(200).json({ status: updatedStatus });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const deleteStatusById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const sts = await status.findByPk(id);
-
-    if (!sts) {
-      return res.stauts(404).json({ error: "Status with that id dont exist" });
-    }
-
-    const deleted = await status.destroy({ where: { id: id } });
-    return res.status(200).json({ message: "Status deleted" });
-  } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createStatus,
-  getAllStatus,
-  getStatusById,
-  updateStatusById,
-  deleteStatusById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

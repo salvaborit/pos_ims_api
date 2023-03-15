@@ -1,99 +1,73 @@
 const { chipProvider } = require("../models");
 
-const createChipProvider = async (req, res) => {
+const getAll = async (req, res) => {
+  try {
+    const foundItems = await chipProvider.findAll();
+    return res.status(200).json(foundItems);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const getById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const foundItem = await chipProvider.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    return res.status(200).json(foundItem);
+  } catch (error) {
+    return res.status(400).json({ error: "Failed to fetch" });
+  }
+};
+
+const postOne = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const existingChipProvider = await chipProvider.findOne({
+    const foundItem = await chipProvider.findOne({
       where: { name },
     });
-    if (existingChipProvider) {
-      return res
-        .status(400)
-        .json({ error: "Chip Provider with that name alredy exist" });
-    }
-
-    const prvdr = await chipProvider.create(req.body);
-    return res.status(201).json(prvdr);
+    if (foundItem)
+      return res.status(400).json({ error: "Name already exists" });
+    await chipProvider.create({ name });
+    return res.status(201).json({ message: "Created successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to create" });
   }
 };
 
-const getAllChipsProviders = async (req, res) => {
+const putById = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
   try {
-    const prvdrs = await chipProvider.findAll({});
-    return res.status(200).json(prvdrs);
+    const foundItem = await chipProvider.findByPk(id);
+    if (!foundItem) return res.status(404).json({ message: "Not found" });
+    await chipProvider.update({ name }, { where: { id } });
+    return res.status(200).json({ message: "Updated successfully" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error: "Failed to update" });
   }
 };
 
-const getChipProviderById = async (req, res) => {
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
-    const prvdr = await chipProvider.findByPk(id);
-
-    if (prvdr) {
-      return res.status(200).json(prvdr);
-    }
-
-    return res
-      .status(404)
-      .json({ error: "Chip Provider with that id dont exist" });
+    const foundItem = await chipProvider.findByPk(id);
+    if (!foundItem) return res.status(404).json({ error: "Not found" });
+    await chipProvider.destroy({ where: { id } });
+    return res.status(200).json({ message: "Deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const updateChipProviderById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const prvdr = await chipProvider.findByPk(id);
-
-    if (!prvdr) {
-      return res
-        .status(404)
-        .json({ error: "Chip Provider with that id dont exists" });
-    }
-
-    const updated = await chipProvider.update(req.body, { where: { id: id } });
-
-    if (updated) {
-      const updatedChipProvider = await chipProvider.findByPk(id);
-      return res.status(200).json({ chipProvider: updatedChipProvider });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-};
-
-const deleteChipProviderById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const prvdr = await chipProvider.findByPk(id);
-
-    if (!prvdr) {
-      return res
-        .status(404)
-        .json({ error: "Chip Provider with that id dont exists" });
-    }
-
-    const deleted = await chipProvider.destroy({ where: { id: id } });
-
-    if (deleted) {
-      const deletedChipProvider = await chipProvider.findByPk(id);
-      return res.status(200).json({ message: "Chip Provider deleted" });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 module.exports = {
-  createChipProvider,
-  getAllChipsProviders,
-  getChipProviderById,
-  updateChipProviderById,
-  deleteChipProviderById,
+  getAll,
+  getById,
+  postOne,
+  putById,
+  deleteById,
 };

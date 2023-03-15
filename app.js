@@ -10,7 +10,7 @@ const makeRoutes = require("./routes/make");
 const statusRoutes = require("./routes/status");
 const terminalRoutes = require("./routes/terminal");
 const chipRoutes = require("./routes/chip");
-const chipProviderRoutes = require("./routes/chipprovider")
+const chipProviderRoutes = require("./routes/chipprovider");
 
 const db = require("./models");
 
@@ -33,14 +33,14 @@ app.listen(port, "0.0.0.0", () => {
     });
 });
 
-app.use("/api/acquirer", acquirerRoutes);
-app.use("/api/connectivity", connectivityRoutes);
-app.use("/api/location", locationRoutes);
-app.use("/api/make", makeRoutes);
-app.use("/api/status", statusRoutes);
-app.use("/api/terminal", terminalRoutes);
-app.use("/api/chip", chipRoutes)
-app.use("/api/chipProvider", chipProviderRoutes)
+app.use("/acquirers", acquirerRoutes);
+app.use("/connectivities", connectivityRoutes);
+app.use("/locations", locationRoutes);
+app.use("/makes", makeRoutes);
+app.use("/statuses", statusRoutes);
+app.use("/terminals", terminalRoutes);
+app.use("/chips", chipRoutes);
+app.use("/chip-providers", chipProviderRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Server running" });

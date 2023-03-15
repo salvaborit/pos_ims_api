@@ -1,11 +1,11 @@
-const { Router } = require('express')
-const locationController = require('../controllers/location')
-const router = Router()
+const { Router } = require("express");
+const locationController = require("../controllers/location");
+const router = Router();
 
-router.post('/add', locationController.createLocation)
-router.get('/all', locationController.getAllLocations)
-router.get('/all/:id', locationController.getLocationById)
-router.put('/update/:id', locationController.updateLocationById)
-router.delete('/delete/:id', locationController.deleteLocationById)
+router.get("/", locationController.getAll);
+router.get("/:id", locationController.getById);
+router.post("/", locationController.postOne);
+router.put("/:id", locationController.putById);
+router.delete("/:id", locationController.deleteById);
 
-module.exports = router
+module.exports = router;

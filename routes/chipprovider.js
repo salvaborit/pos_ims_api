@@ -1,11 +1,11 @@
-const { Router } = require('express')
-const chipProviderController = require('../controllers/chipProvider')
-const router = Router()
+const { Router } = require("express");
+const chipProviderController = require("../controllers/chipProvider");
+const router = Router();
 
-router.post('/add', chipProviderController.createChipProvider)
-router.get('/all', chipProviderController.getAllChipsProviders)
-router.get('/all/:id', chipProviderController.getChipProviderById)
-router.put('/update/:id', chipProviderController.updateChipProviderById)
-router.delete('/delete/:id', chipProviderController.deleteChipProviderById)
+router.get("/", chipProviderController.getAll);
+router.get("/:id", chipProviderController.getById);
+router.post("/", chipProviderController.postOne);
+router.put("/:id", chipProviderController.putById);
+router.delete("/:id", chipProviderController.deleteById);
 
-module.exports = router
+module.exports = router;
