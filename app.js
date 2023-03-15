@@ -9,6 +9,8 @@ const locationRoutes = require("./routes/location");
 const makeRoutes = require("./routes/make");
 const statusRoutes = require("./routes/status");
 const terminalRoutes = require("./routes/terminal");
+const chipRoutes = require("./routes/chip");
+const chipProviderRoutes = require("./routes/chipprovider")
 
 const db = require("./models");
 
@@ -37,6 +39,8 @@ app.use("/api/location", locationRoutes);
 app.use("/api/make", makeRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/terminal", terminalRoutes);
+app.use("/api/chip", chipRoutes)
+app.use("api/chipProvider", chipProviderRoutes)
 
 app.get("/", (req, res) => {
   res.json({ message: "Server running" });
