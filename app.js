@@ -40,7 +40,7 @@ app.use("/api/make", makeRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/terminal", terminalRoutes);
 app.use("/api/chip", chipRoutes)
-app.use("api/chipProvider", chipProviderRoutes)
+app.use("/api/chipProvider", chipProviderRoutes)
 
 app.get("/", (req, res) => {
   res.json({ message: "Server running" });

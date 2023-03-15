@@ -1,15 +1,15 @@
-const { chipprovider } = require('../models')
+const { chipProvider } = require('../models')
 
 const createChipProvider = async (req, res) => {
     const { name } = req.body
 
     try {
-        const existingChipProvider = await chipprovider.findOne({ where: { name } })
+        const existingChipProvider = await chipProvider.findOne({ where: { name } })
         if (existingChipProvider) {
             return res.status(400).json({ error: 'Chip Provider with that name alredy exist' })
         }
 
-        const prvdr = await chipprovider.create(req.body)
+        const prvdr = await chipProvider.create(req.body)
         return res.status(201).json({ prvdr })
 
     } catch (error) {
@@ -19,7 +19,7 @@ const createChipProvider = async (req, res) => {
 
 const getAllChipsProviders = async (req, res) => {
     try {
-        const prvdrs = await chipprovider.findAll({})
+        const prvdrs = await chipProvider.findAll({})
         return res.status(200).json({ prvdrs })
     } catch (error) {
         console.log(error)
@@ -29,7 +29,7 @@ const getAllChipsProviders = async (req, res) => {
 const getChipProviderById = async (req, res) => {
     try {
         const { id } = req.params
-        const prvdr = await chipprovider.findByPk(id)
+        const prvdr = await chipProvider.findByPk(id)
 
         if (prvdr) {
             return res.status(200).json({ prvdr })
@@ -44,17 +44,17 @@ const getChipProviderById = async (req, res) => {
 const updateChipProviderById = async (req, res) => {
     try {
         const { id } = req.params
-        const prvdr = await chipprovider.findByPk(id)
+        const prvdr = await chipProvider.findByPk(id)
 
         if (!prvdr) {
             return res.status(404).json({ error: 'Chip Provider with that id dont exists' })
         }
 
-        const updated = await chipprovider.update(req.body)
+        const updated = await chipProvider.update(req.body, { where: { id: id } })
 
         if (updated) {
-            const updatedChipProvider = await chipprovider.findByPk(id)
-            return res.status(200).json({ chip: updatedChipProvider })
+            const updatedChipProvider = await chipProvider.findByPk(id)
+            return res.status(200).json({ chipProvider: updatedChipProvider })
         }
     } catch (error) {
         console.log(error)
@@ -64,16 +64,16 @@ const updateChipProviderById = async (req, res) => {
 const deleteChipProviderById = async (req, res) => {
     try {
         const { id } = req.params
-        const prvdr = await chipprovider.findByPk(id)
+        const prvdr = await chipProvider.findByPk(id)
 
         if (!prvdr) {
             return res.status(404).json({ error: 'Chip Provider with that id dont exists' })
         }
 
-        const deleted = await chipprovider.destroy({ where: { id: id } })
+        const deleted = await chipProvider.destroy({ where: { id: id } })
 
         if (deleted) {
-            const deletedChipProvider = await chipprovider.findByPk(id)
+            const deletedChipProvider = await chipProvider.findByPk(id)
             return res.status(200).json({ message: 'Chip Provider deleted' })
         }
     } catch (error) {
