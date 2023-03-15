@@ -17,7 +17,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "chipProvider",
+          model: "chipProviders",
           key: "id",
         },
         onUpdate: "CASCADE",

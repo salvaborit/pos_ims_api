@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm test",
     "dev": "nodemon app.js",
-    "migrate": "node middleware/migrate_to_db.js"
+    "migrate": "node middleware/migrate_to_db.js",
+    "resetdb": "./middleware/reset-db.sh"
   },
   "repository": {
     "type": "git",

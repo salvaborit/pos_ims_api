@@ -1,106 +1,106 @@
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, DataTypes) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable("terminals", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
       },
       uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       serialNumber: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       partNumber: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       acquirerId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "acquirer",
+          model: "acquirers",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
       makeId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "make",
+          model: "makes",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
       locationId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "location",
+          model: "locations",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
       statusId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "status",
+          model: "statuses",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
       connectivityId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "connectivity",
+          model: "connectivities",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
       chipId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "chip",
+          model: "chips",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
       softwareVersion: {
-        type: DataTypes.FLOAT,
+        type: Sequelize.FLOAT,
         allowNull: true,
       },
       hasKeys: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
         allowNull: false,
       },
       remarks: {
-        type: DataTypes.TEXT,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
     });
   },

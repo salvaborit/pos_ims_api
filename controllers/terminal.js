@@ -1,99 +1,83 @@
 const { terminal } = require("../models");
 
-function createTerminal(req, res) {
+const createTerminal = async (req, res) => {
   const { serialNumber } = req.body;
-
-  terminal
-    .findOne({ where: { serialNumber } })
-    .then((existingTerminal) => {
-      if (existingTerminal) {
-        return res.status(400).json({ error: "Serial number already exists" });
-      } else {
-        terminal.create(req.body).then((newTerminal) => {
-          return res.status(201).json(newTerminal);
-        });
-      }
-    })
-    .catch((err) => {
-      return res.status(400).json({ error: err });
+  try {
+    const existingterminal = await terminal.findOne({
+      where: { serialNumber },
     });
-}
+    if (existingterminal) {
+      return res.status(400).json({ error: "That terminal alredy exist" });
+    }
 
-function getAllTerminals(req, res) {
-  terminal
-    .findAll()
-    .then((allTerminals) => {
-      return res.status(200).json(allTerminals);
-    })
-    .catch((err) => {
-      return res.status(400).json({ error: err });
-    });
-}
+    const term = await terminal.create(req.body);
+    return res.status(201).json(term);
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 
-function getTerminalById(req, res) {
-  const { id } = req.params;
+const getAllTerminals = async (req, res) => {
+  try {
+    const terms = await terminal.findAll({});
+    return res.status(201).json(terms);
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 
-  terminal
-    .findByPk(id)
-    .then((term) => {
-      if (term) {
-        return res.status(200).json(term);
-      } else {
-        return res
-          .status(404)
-          .json({ error: "Terminal with that ID not found" });
-      }
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
-}
+const getTerminalById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const term = await terminal.findByPk(id);
 
-async function updateTerminalById(req, res) {
-  const { id } = req.params;
+    if (term) {
+      return res.status(200).json(term);
+    }
 
-  terminal
-    .findByPk(id)
-    .then((term) => {
-      if (term) {
-        terminal.update(req.body, { where: { id } }).then(() => {
-          terminal.findByPk(id).then((updatedTerm) => {
-            return res.status(200).json(updatedTerm);
-          });
-        });
-      } else {
-        return res
-          .status(404)
-          .json({ error: "Terminal with that ID not found" });
-      }
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
-}
+    return res.status(404).json({ message: "terminal with that id not exist" });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 
-function deleteTerminalById(req, res) {
-  const { id } = req.params;
+const updateTerminalById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const term = await terminal.findByPk(id);
 
-  terminal
-    .findByPk(id)
-    .then((term) => {
-      if (term) {
-        terminal.destroy({ where: { id } }).then(() => {
-          return res
-            .status(200)
-            .json({ message: "Terminal deleted correctly" });
-        });
-      } else {
-        return res
-          .status(404)
-          .json({ error: "Terminal with that ID not found" });
-      }
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
-}
+    if (!term) {
+      return res.status(404).json({ error: "terminal with that id not exist" });
+    }
+
+    const updated = await terminal.update(req.body, { where: { id: id } });
+
+    if (updated) {
+      const updatedterminal = await terminal.findOne({ where: { id: id } });
+      return res.status(200).json({ terminal: updatedterminal });
+    }
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+
+const deleteTerminalById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const term = await terminal.findByPk(id);
+
+    if (!term) {
+      return res
+        .stauts(404)
+        .json({ error: "terminal with that id dont exist" });
+    }
+
+    const deleted = await terminal.destroy({ where: { id: id } });
+    return res.status(200).json({ message: "terminal deleted" });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
 
 module.exports = {
   createTerminal,

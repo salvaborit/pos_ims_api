@@ -9,18 +9,18 @@ const createMake = async (req, res) => {
     }
 
     const mk = await make.create(req.body);
-    return res.status(201).json({ mk });
+    return res.status(201).json(mk);
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error });
   }
 };
 
 const getAllMakes = async (req, res) => {
   try {
     const mks = await make.findAll({});
-    return res.status(201).json({ mks });
+    return res.status(201).json(mks);
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error });
   }
 };
 
@@ -30,12 +30,12 @@ const getMakeById = async (req, res) => {
     const mk = await make.findByPk(id);
 
     if (mk) {
-      return res.status(200).json({ mk });
+      return res.status(200).json(mk);
     }
 
     return res.status(404).json({ message: "Make with that id not exist" });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error });
   }
 };
 
@@ -55,7 +55,7 @@ const updateMakeById = async (req, res) => {
       return res.status(200).json({ make: updatedMk });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error });
   }
 };
 
@@ -71,7 +71,7 @@ const deleteMakeById = async (req, res) => {
     const deleted = await make.destroy({ where: { id: id } });
     return res.status(200).json({ message: "Make deleted" });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error });
   }
 };
 
