@@ -57,7 +57,9 @@ const updateAcquirerById = async (req, res) => {
       const updatedAcqr = await acquirer.findByPk(id);
       return res.status(200).json({ acquirer: updatedAcqr });
     }
-  } catch (error) {}
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
 };
 
 const deleteAcquirerById = async (req, res) => {

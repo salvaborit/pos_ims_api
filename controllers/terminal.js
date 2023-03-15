@@ -1,4 +1,12 @@
-const { terminal } = require("../models");
+const {
+  terminal,
+  acquirer,
+  make,
+  location,
+  status,
+  connectivity,
+  chip,
+} = require("../models");
 
 const createTerminal = async (req, res) => {
   const { serialNumber } = req.body;
@@ -10,19 +18,23 @@ const createTerminal = async (req, res) => {
       return res.status(400).json({ error: "That terminal alredy exist" });
     }
 
-    const term = await terminal.create(req.body);
+    const term = await terminal.create(req.body, {
+      include: [acquirer, make, location, status, connectivity, chip],
+    });
     return res.status(201).json(term);
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
 const getAllTerminals = async (req, res) => {
   try {
-    const terms = await terminal.findAll({});
+    const terms = await terminal.findAll({
+      include: [acquirer, make, location, status, connectivity, chip],
+    });
     return res.status(201).json(terms);
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
@@ -37,7 +49,7 @@ const getTerminalById = async (req, res) => {
 
     return res.status(404).json({ message: "terminal with that id not exist" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
@@ -57,7 +69,7 @@ const updateTerminalById = async (req, res) => {
       return res.status(200).json({ terminal: updatedterminal });
     }
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
@@ -75,7 +87,7 @@ const deleteTerminalById = async (req, res) => {
     const deleted = await terminal.destroy({ where: { id: id } });
     return res.status(200).json({ message: "terminal deleted" });
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
